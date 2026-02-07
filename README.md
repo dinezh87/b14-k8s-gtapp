@@ -1,5 +1,12 @@
 # K8s learning - Gratitude App
 
+## Argo CD documentation
+
+See `ARGOCD.md` for:
+- Argo CD install and login on EKS
+- App creation/sync commands
+- Manifest file order for this repository
+
 creating the cluster:
 
 ```bash
