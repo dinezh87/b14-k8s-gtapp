@@ -18,13 +18,20 @@ spec:
           image: prashantdey/merndemoapp:fileservice1.0
           ports:
             - containerPort: 5004
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
           env:
             - name: PORT
               value: "5004"
             - name: AWS_REGION
-              value: "us-east-1"
+              value: "us-west-1"
             - name: S3_BUCKET
-              value: "prashant-mckinsey-bucket"
+              value: "gratitude-b14 I"
             - name: S3_PREFIX
               value: "gratitude-uploads"
             - name: FILE_MAX_MB
