@@ -17,6 +17,13 @@ spec:
           image: prashantdey/merndemoapp:apigatewayv1.0
           ports:
             - containerPort: 5000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
           env:
             - name: ENTRIES_SERVICE_ADDR
               value: entries-cluster-ip-service:50051
@@ -25,5 +32,5 @@ spec:
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: openai-api
+                  name: openai-secret
                   key: OPENAI_API_KEY
