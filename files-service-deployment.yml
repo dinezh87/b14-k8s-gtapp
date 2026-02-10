@@ -31,7 +31,7 @@ spec:
             - name: AWS_REGION
               value: "us-west-1"
             - name: S3_BUCKET
-              value: "gratitude-b14 I"
+              value: "gratitude-b14"
             - name: S3_PREFIX
               value: "gratitude-uploads"
             - name: FILE_MAX_MB
