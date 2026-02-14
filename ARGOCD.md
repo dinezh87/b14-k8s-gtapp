@@ -122,18 +122,19 @@ Argo CD will apply all manifests under this folder. Logical order/dependency:
 13. `stats-service-cluster-ip-service.yml`
 14. `server-deployment.yml`
 15. `server-cluster-ip-service.yml`
-16. `files-service-deployment.yml`
-17. `files-service-cluster-ip-service.yml`
-18. `moods-api-deployment.yml`
-19. `moods-api-cluster-ip-service.yml`
-20. `stats-api-deployment.yml`
-21. `stats-api-cluster-ip-service.yml`
-22. `api-gateway-deployment.yml`
-23. `api-gateway-cluster-ip-service.yml`
-24. `client-deployment.yml`
-25. `client-cluster-ip-service.yml`
-26. `client-service.yml`
-27. `ingress-service.yml`
+16. `files-service-service-account.yml`
+17. `files-service-deployment.yml`
+18. `files-service-cluster-ip-service.yml`
+19. `moods-api-deployment.yml`
+20. `moods-api-cluster-ip-service.yml`
+21. `stats-api-deployment.yml`
+22. `stats-api-cluster-ip-service.yml`
+23. `api-gateway-deployment.yml`
+24. `api-gateway-cluster-ip-service.yml`
+25. `client-deployment.yml`
+26. `client-cluster-ip-service.yml`
+27. `client-service.yml`
+28. `ingress-service.yml`
 
 After first database init or schema updates, restart Postgres if needed:
 

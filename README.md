@@ -7,6 +7,13 @@ See `ARGOCD.md` for:
 - App creation/sync commands
 - Manifest file order for this repository
 
+## Helm documentation
+
+See `HELM.md` for:
+- Recommended Helm workflow for this repository
+- Dependency install via Helm (ingress-nginx)
+- Optional migration path from raw manifests to a Helm chart
+
 creating the cluster:
 
 ```bash
@@ -44,3 +51,26 @@ Note: the postgres-init-cluster needs to be applied and post that the rollout th
 kubectl rollout restart deployment postgres-deployment
 kubectl get pods -w
 ```
+
+
+## HPA
+
+Pre-requisite:
+
+1. Metrics Server (needed for HPA CPU/Memory)
+
+```bash
+kubectl get deployment -n kube-system metrics-server
+kubectl top nodes
+kubectl top pods -A
+```
+
+If kubectl top fails, install metrics-server (standard manifest):
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/component
+```
+On EKS you may need to allow insecure kubelet TLS (common in some setups). Patch metrics-server args if required:
+```bash
+kubectl -n kube-system patch deployment metrics-server --type='json' -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+```
+

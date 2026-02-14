@@ -1,0 +1,10 @@
+# Common VCS and editor files
+.git/
+.gitignore
+.DS_Store
+*.swp
+*.tmp
+
+# Chart artifacts
+*.tgz
+charts/

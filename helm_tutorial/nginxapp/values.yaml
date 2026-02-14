@@ -2,15 +2,15 @@ repositoryName: nginx
 apps:
   - name: app1 
     tag: "1.25"
-    replicaCount: 1
+    replicaCount: 3
     port: 80
   
   - name: app2 
     tag: "1.23"
-    replicaCount: 2
+    replicaCount: 3
     port: 80
 
   - name: app3 
     tag: "latest"
-    replicaCount: 3
+    replicaCount: 1
     port: 80

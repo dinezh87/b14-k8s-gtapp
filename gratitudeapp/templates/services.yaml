@@ -1,0 +1,153 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.apiGateway.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.apiGateway.appLabel }}
+  ports:
+    - port: {{ .Values.components.apiGateway.servicePort }}
+      targetPort: {{ .Values.components.apiGateway.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.client.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.client.appLabel }}
+  ports:
+    - port: {{ .Values.components.client.servicePort }}
+      targetPort: {{ .Values.components.client.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.clientAlias.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.clientAlias.appLabel }}
+  ports:
+    - port: {{ .Values.components.clientAlias.servicePort }}
+      targetPort: {{ .Values.components.clientAlias.servicePort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.entries.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.entries.appLabel }}
+  ports:
+    - port: {{ .Values.components.entries.servicePort }}
+      targetPort: {{ .Values.components.entries.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.filesService.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.filesService.appLabel }}
+  ports:
+    - port: {{ .Values.components.filesService.servicePort }}
+      targetPort: {{ .Values.components.filesService.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.moodsApi.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.moodsApi.appLabel }}
+  ports:
+    - port: {{ .Values.components.moodsApi.servicePort }}
+      targetPort: {{ .Values.components.moodsApi.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.moodsService.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.moodsService.appLabel }}
+  ports:
+    - port: {{ .Values.components.moodsService.servicePort }}
+      targetPort: {{ .Values.components.moodsService.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.postgres.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.postgres.appLabel }}
+  ports:
+    - port: {{ .Values.components.postgres.servicePort }}
+      targetPort: {{ .Values.components.postgres.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.server.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.server.appLabel }}
+  ports:
+    - port: {{ .Values.components.server.servicePort }}
+      targetPort: {{ .Values.components.server.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.statsApi.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.statsApi.appLabel }}
+  ports:
+    - port: {{ .Values.components.statsApi.servicePort }}
+      targetPort: {{ .Values.components.statsApi.containerPort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.statsService.serviceName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    component: {{ .Values.components.statsService.appLabel }}
+  ports:
+    - port: {{ .Values.components.statsService.servicePort }}
+      targetPort: {{ .Values.components.statsService.containerPort }}

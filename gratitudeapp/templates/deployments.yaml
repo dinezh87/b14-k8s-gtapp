@@ -1,0 +1,323 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.postgres.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.postgres.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.postgres.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.postgres.appLabel }}
+    spec:
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.database.pvc.name }}
+        - name: postgres-init
+          configMap:
+            name: {{ .Values.postgresInit.configMapName }}
+      containers:
+        - name: postgres
+          image: {{ .Values.components.postgres.image }}
+          ports:
+            - containerPort: {{ .Values.components.postgres.containerPort }}
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: {{ .Values.components.postgres.volumeMountPath }}
+            - name: postgres-init
+              mountPath: {{ .Values.components.postgres.initMountPath }}
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secret.name }}
+                  key: PGPASSWORD
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.entries.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.entries.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.entries.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.entries.appLabel }}
+    spec:
+      containers:
+        - name: entries
+          image: {{ .Values.components.entries.image }}
+          ports:
+            - containerPort: {{ .Values.components.entries.containerPort }}
+          env:
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: {{ .Values.components.postgres.serviceName }}
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secret.name }}
+                  key: PGPASSWORD
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.moodsService.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.moodsService.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.moodsService.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.moodsService.appLabel }}
+    spec:
+      containers:
+        - name: moods-service
+          image: {{ .Values.components.moodsService.image }}
+          ports:
+            - containerPort: {{ .Values.components.moodsService.containerPort }}
+          env:
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: {{ .Values.components.postgres.serviceName }}
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secret.name }}
+                  key: PGPASSWORD
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.statsService.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.statsService.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.statsService.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.statsService.appLabel }}
+    spec:
+      containers:
+        - name: stats-service
+          image: {{ .Values.components.statsService.image }}
+          ports:
+            - containerPort: {{ .Values.components.statsService.containerPort }}
+          env:
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: {{ .Values.components.postgres.serviceName }}
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secret.name }}
+                  key: PGPASSWORD
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.server.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.server.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.server.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.server.appLabel }}
+    spec:
+      containers:
+        - name: server
+          image: {{ .Values.components.server.image }}
+          ports:
+            - containerPort: {{ .Values.components.server.containerPort }}
+          env:
+            - name: PORT
+              value: {{ .Values.components.server.env.PORT | quote }}
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: {{ .Values.components.postgres.serviceName }}
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secret.name }}
+                  key: PGPASSWORD
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.filesService.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.filesService.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.filesService.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.filesService.appLabel }}
+    spec:
+      serviceAccountName: {{ .Values.filesService.serviceAccount.name }}
+      containers:
+        - name: files-service
+          image: {{ .Values.components.filesService.image }}
+          ports:
+            - containerPort: {{ .Values.components.filesService.containerPort }}
+          env:
+            - name: PORT
+              value: {{ .Values.components.filesService.env.PORT | quote }}
+            - name: AWS_REGION
+              value: {{ .Values.components.filesService.env.AWS_REGION | quote }}
+            - name: S3_BUCKET
+              value: {{ .Values.components.filesService.env.S3_BUCKET | quote }}
+            - name: S3_PREFIX
+              value: {{ .Values.components.filesService.env.S3_PREFIX | quote }}
+            - name: FILE_MAX_MB
+              value: {{ .Values.components.filesService.env.FILE_MAX_MB | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.moodsApi.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.moodsApi.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.moodsApi.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.moodsApi.appLabel }}
+    spec:
+      containers:
+        - name: moods-api
+          image: {{ .Values.components.moodsApi.image }}
+          ports:
+            - containerPort: {{ .Values.components.moodsApi.containerPort }}
+          env:
+            - name: MOODS_SERVICE_ADDR
+              value: {{ .Values.components.moodsApi.env.MOODS_SERVICE_ADDR | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.statsApi.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.statsApi.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.statsApi.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.statsApi.appLabel }}
+    spec:
+      containers:
+        - name: stats-api
+          image: {{ .Values.components.statsApi.image }}
+          ports:
+            - containerPort: {{ .Values.components.statsApi.containerPort }}
+          env:
+            - name: STATS_SERVICE_ADDR
+              value: {{ .Values.components.statsApi.env.STATS_SERVICE_ADDR | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.apiGateway.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.apiGateway.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.apiGateway.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.apiGateway.appLabel }}
+    spec:
+      containers:
+        - name: api-gateway
+          image: {{ .Values.components.apiGateway.image }}
+          ports:
+            - containerPort: {{ .Values.components.apiGateway.containerPort }}
+          env:
+            - name: ENTRIES_SERVICE_ADDR
+              value: {{ .Values.components.apiGateway.env.ENTRIES_SERVICE_ADDR | quote }}
+            - name: OPENAI_MODEL
+              value: {{ .Values.components.apiGateway.env.OPENAI_MODEL | quote }}
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.openai.secret.name }}
+                  key: OPENAI_API_KEY
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.client.deploymentName }}
+  labels:
+    {{- include "gratitudeapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.client.replicas }}
+  selector:
+    matchLabels:
+      component: {{ .Values.components.client.appLabel }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.components.client.appLabel }}
+    spec:
+      containers:
+        - name: client
+          image: {{ .Values.components.client.image }}
+          ports:
+            - containerPort: {{ .Values.components.client.containerPort }}

@@ -17,3 +17,10 @@ spec:
           image: prashantdey/merndemoapp:clientv1.6
           ports:
             - containerPort: 3000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
