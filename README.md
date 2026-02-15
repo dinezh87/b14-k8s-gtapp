@@ -20,6 +20,44 @@ creating the cluster:
 eksctl create cluster --name b15-pk-eks --region ap-south-1 --version 1.34 --zones ap-south-1a,ap-south-1b --managed --with-oidc --nodegroup-name ng-1 --node-type t3.medium --nodes 2 --nodes-min 2 --nodes-max 2 --node-ami-family AmazonLinux2023
 ```
 
+You can also create cluster through yml file with the content given below by naming the file as `eks-cluster.yml`:
+
+```yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: b15-pk-eks
+  region: ap-south-1
+  version: "1.34"
+
+availabilityZones:
+  - ap-south-1a
+  - ap-south-1b
+
+vpc:
+  cidr: 10.1.0.0/16
+  nat:
+    gateway: Single  
+
+iam:
+  withOIDC: true
+
+managedNodeGroups:
+  - name: ng-1
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    amiFamily: AmazonLinux2023
+```
+
+```bash
+eksctl create cluster -f eks-cluster.yml
+```
+
+Finally switch the context of the kubectl to the eks cluster created:
+
 ```bash
 aws eks update-kubeconfig --region ap-south-1 --name b15-pk-eks
 ```

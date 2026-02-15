@@ -1,0 +1,27 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: mck-pk-eks
+  region: ap-south-1
+  version: "1.34"
+
+availabilityZones:
+  - ap-south-1a
+  - ap-south-1b
+
+vpc:
+  cidr: 10.1.0.0/16
+  nat:
+    gateway: Single   # change to HighlyAvailable if production
+
+iam:
+  withOIDC: true
+
+managedNodeGroups:
+  - name: ng-1
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    amiFamily: AmazonLinux2023
