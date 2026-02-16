@@ -139,8 +139,8 @@ Let's follow the steps
     ```bash
     mapUsers: |
         - userarn: arn:aws:iam::975050024946:user/demo-eks-user
-            username: dev-user
-            groups:
+          username: dev-user
+          groups:
             - dev-group
     ```
 
