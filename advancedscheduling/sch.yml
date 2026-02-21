@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scheduling-learning
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: scheduling-default-limits
+  namespace: scheduling-learning
+spec:
+  limits:
+    - type: Container
+      defaultRequest:
+        cpu: 100m
+        memory: "128Mi"
+      default:
+        cpu: 500m
+        memory: 512Mi
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: scheduling-quota
+  namespace: scheduling-learning
+spec:
+  hard:
+    requests.cpu: '1'
+    requests.memory: 1Gi
+    limits.cpu: '2'
+    limits.memory: 2Gi
+    pods: '5'
+    persistentvolumeclaims: '5'
+    requests.storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduling-deployment
+  namespace: scheduling-learning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-demo
+  template:
+    metadata:
+      labels:
+        app: nginx-demo
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "256Mi"
